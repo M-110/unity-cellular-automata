@@ -154,8 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 6624771420684156508, guid: 25e7f47ceb58d4949a0010e30410566a, type: 3}
-  depth: 25
-  ruleNumber: 3973092510
+  depth: 24
+  ruleNumber: 5
 --- !u!108 &1517903087
 Light:
   m_ObjectHideFlags: 0
