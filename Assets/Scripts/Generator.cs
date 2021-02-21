@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Rules;
 using UnityEngine;
 using Random = System.Random;
 
@@ -12,7 +13,7 @@ public class Generator : MonoBehaviour
     int width;
     int height;
     List<bool[,]> layers = new List<bool[,]>();
-    Rules rules;
+    GeneralRules rules;
     // 2186559728 Simple flat triangles
     void Start()
     {
@@ -38,7 +39,7 @@ public class Generator : MonoBehaviour
 
     void GenerateRules()
     {
-        rules = new Rules(ruleNumber);
+        rules = new GeneralRules(ruleNumber);
     }
 
     void GenerateTopLayer()
