@@ -4,8 +4,6 @@ namespace Rules
 {
     public class GeneralRules : RulesBase
     {
-        bool[] rules;
-
         public GeneralRules(uint ruleNumber) : base(ruleNumber)
         {
             string binaryString = Convert.ToString(ruleNumber, 2).PadLeft(32, '0');
@@ -15,79 +13,72 @@ namespace Rules
                 rules[i] = binaryString[i] == '1';
         }
     
-        public override bool ApplyRules(bool a, bool b, bool c, bool d, bool e)
+        public override bool ApplyRules(bool center, bool left, bool right, bool up, bool down)
         {
-            //Debug.Log($"{a}, {b}, {c}, {d}, {e}");
             // This code is generated through Python, see below for script.
-            #region Combinatoric Conditionals 
-            if (a && b && c && d && e)
+            if (center && left && right && up && down)
                 return rules[0];
-            if (!a && b && c && d && e)
+            if (!center && left && right && up && down)
                 return rules[1];
-            if (a && !b && c && d && e)
+            if (center && !left && right && up && down)
                 return rules[2];
-            if (a && b && !c && d && e)
+            if (center && left && !right && up && down)
                 return rules[3];
-            if (a && b && c && !d && e)
+            if (center && left && right && !up && down)
                 return rules[4];
-            if (a && b && c && d && !e)
+            if (center && left && right && up && !down)
                 return rules[5];
-            if (!a && !b && c && d && e)
+            if (!center && !left && right && up && down)
                 return rules[6];
-            if (!a && b && !c && d && e)
+            if (!center && left && !right && up && down)
                 return rules[7];
-            if (!a && b && c && !d && e)
+            if (!center && left && right && !up && down)
                 return rules[8];
-            if (!a && b && c && d && !e)
+            if (!center && left && right && up && !down)
                 return rules[9];
-            if (a && !b && !c && d && e)
+            if (center && !left && !right && up && down)
                 return rules[10];
-            if (a && !b && c && !d && e)
+            if (center && !left && right && !up && down)
                 return rules[11];
-            if (a && !b && c && d && !e)
+            if (center && !left && right && up && !down)
                 return rules[12];
-            if (a && b && !c && !d && e)
+            if (center && left && !right && !up && down)
                 return rules[13];
-            if (a && b && !c && d && !e)
+            if (center && left && !right && up && !down)
                 return rules[14];
-            if (a && b && c && !d && !e)
+            if (center && left && right && !up && !down)
                 return rules[15];
-            if (!a && !b && !c && d && e)
+            if (!center && !left && !right && up && down)
                 return rules[16];
-            if (!a && !b && c && !d && e)
+            if (!center && !left && right && !up && down)
                 return rules[17];
-            if (!a && !b && c && d && !e)
+            if (!center && !left && right && up && !down)
                 return rules[18];
-            if (!a && b && !c && !d && e)
+            if (!center && left && !right && !up && down)
                 return rules[19];
-            if (!a && b && !c && d && !e)
+            if (!center && left && !right && up && !down)
                 return rules[20];
-            if (!a && b && c && !d && !e)
+            if (!center && left && right && !up && !down)
                 return rules[21];
-            if (a && !b && !c && !d && e)
+            if (center && !left && !right && !up && down)
                 return rules[22];
-            if (a && !b && !c && d && !e)
+            if (center && !left && !right && up && !down)
                 return rules[23];
-            if (a && !b && c && !d && !e)
+            if (center && !left && right && !up && !down)
                 return rules[24];
-            if (a && b && !c && !d && !e)
+            if (center && left && !right && !up && !down)
                 return rules[25];
-            if (!a && !b && !c && !d && e)
+            if (!center && !left && !right && !up && down)
                 return rules[26];
-            if (!a && !b && !c && d && !e)
+            if (!center && !left && !right && up && !down)
                 return rules[27];
-            if (!a && !b && c && !d && !e)
+            if (!center && !left && right && !up && !down)
                 return rules[28];
-            if (!a && b && !c && !d && !e)
+            if (!center && left && !right && !up && !down)
                 return rules[29];
-            if (a && !b && !c && !d && !e)
+            if (center && !left && !right && !up && !down)
                 return rules[30];
-            if (!a && !b && !c && !d && !e)
-                return rules[31];
-            #endregion
-        
-            // Can't reach this.
-            return false;
+            return rules[31];
         } 
     }
 }

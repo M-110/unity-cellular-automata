@@ -5,15 +5,22 @@ using Rules;
 using UnityEngine;
 using Random = System.Random;
 
+public enum RulesType
+{
+    General,
+    GrowthTotalistic
+}
+
 public class Generator : MonoBehaviour
 {
+    [SerializeField] RulesType rulesType;
     [SerializeField] GameObject cube;
     public int depth = 1;
     [SerializeField] uint ruleNumber = 4294967295;
     int width;
     int height;
     List<bool[,]> layers = new List<bool[,]>();
-    GeneralRules rules;
+    RulesBase rules;
     // 2186559728 Simple flat triangles
     void Start()
     {
@@ -36,10 +43,12 @@ public class Generator : MonoBehaviour
         
         return ex;
     }
-
     void GenerateRules()
     {
-        rules = new GeneralRules(ruleNumber);
+        if (rulesType == RulesType.General)
+            rules = new GeneralRules(ruleNumber);
+        else if (rulesType == RulesType.GrowthTotalistic)
+            rules = new GrowthTotalisticRules(ruleNumber);
     }
 
     void GenerateTopLayer()
