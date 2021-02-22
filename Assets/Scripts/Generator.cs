@@ -13,10 +13,10 @@ public enum RulesType
 
 public class Generator : MonoBehaviour
 {
-    [SerializeField] RulesType rulesType;
-    [SerializeField] GameObject cube;
-    public int depth = 1;
-    [SerializeField] uint ruleNumber = 4294967295;
+    [HideInInspector] public RulesType rulesType;
+    [HideInInspector] public GameObject cube;
+    [HideInInspector] public int depth = 1;
+    [SerializeField] public uint ruleNumber = 4294967295;
     int width;
     int height;
     List<bool[,]> layers = new List<bool[,]>();
