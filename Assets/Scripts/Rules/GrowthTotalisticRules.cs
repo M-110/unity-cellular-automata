@@ -25,11 +25,11 @@ namespace Rules
 
             return total switch
             {
-                0 => rules[0],
-                1 => rules[1],
+                0 => rules[4],
+                1 => rules[3],
                 2 => rules[2],
-                3 => rules[3],
-                _ => rules[4],
+                3 => rules[1],
+                _ => rules[0],
             };
         }
     }

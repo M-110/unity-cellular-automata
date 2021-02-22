@@ -8,6 +8,7 @@ using Random = System.Random;
 public enum RulesType
 {
     General,
+    Totalistic,
     GrowthTotalistic
 }
 
@@ -45,10 +46,13 @@ public class Generator : MonoBehaviour
     }
     void GenerateRules()
     {
-        if (rulesType == RulesType.General)
-            rules = new GeneralRules(ruleNumber);
-        else if (rulesType == RulesType.GrowthTotalistic)
-            rules = new GrowthTotalisticRules(ruleNumber);
+        rules = rulesType switch
+        {
+            RulesType.General => new GeneralRules(ruleNumber),
+            RulesType.Totalistic => new TotalisticRules(ruleNumber),
+            RulesType.GrowthTotalistic => new GrowthTotalisticRules(ruleNumber),
+            _ => rules
+        };
     }
 
     void GenerateTopLayer()

@@ -155,7 +155,7 @@ MonoBehaviour:
   rulesType: 1
   cube: {fileID: 6624771420684156508, guid: bdda8ddb9b3066448b2c2fba949afa72, type: 3}
   depth: 6
-  ruleNumber: 3252
+  ruleNumber: 15
 --- !u!4 &472165663
 Transform:
   m_ObjectHideFlags: 0
