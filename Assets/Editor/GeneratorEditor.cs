@@ -35,6 +35,12 @@ namespace Editor
                 EditorGUILayout.HelpBox("General Rule 32-bit\n (0 to 4,294,967,295)", MessageType.None);
                 DrawDefaultInspector();
             }
+            else if (myGenerator.rulesType == RulesType.LifeGrowthTotalistic)
+            {
+                EditorGUILayout.HelpBox("Life Growth Totalistic Rule 16-bit\n (0 to 65,535)", MessageType.None);
+                int tempInt = EditorGUILayout.IntField("Rule Number", (int) myGenerator.ruleNumber);
+                myGenerator.ruleNumber = (uint) (tempInt < 0 ? 0 : tempInt > 65_535 ? 65_535 : tempInt);
+            }
             else if (myGenerator.rulesType == RulesType.Totalistic)
             {
                 EditorGUILayout.HelpBox("Totalistic Rule 6-bit\n (0 to 63)", MessageType.None);

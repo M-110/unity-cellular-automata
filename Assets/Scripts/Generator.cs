@@ -46,9 +46,8 @@ public class Generator : MonoBehaviour
         bool downLeft = previousLayer[(x - 1)%width, (z - 1)%height];
         bool downRight = previousLayer[(x + 1)%width, (z - 1)%height];
         //Debug.Log($"xyz = ({x}, {y}, {z}), clrud = {center}, {left}, {right}, {up}, {down}");
-        bool ex = rules.ApplyRules(center, left, right, up, down, upLeft, upRight, downLeft, downRight);
+        return rules.ApplyRules(center, left, right, up, down, upLeft, upRight, downLeft, downRight);
         
-        return ex;
     }
     void GenerateRules()
     {
@@ -57,6 +56,7 @@ public class Generator : MonoBehaviour
             RulesType.General => new GeneralRules(ruleNumber),
             RulesType.Totalistic => new TotalisticRules(ruleNumber),
             RulesType.GrowthTotalistic => new GrowthTotalisticRules(ruleNumber),
+            RulesType.LifeGrowthTotalistic => new LifeGrowthTotalisticRules(ruleNumber),
             _ => rules
         };
     }
