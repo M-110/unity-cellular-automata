@@ -18,6 +18,7 @@ public class Generator : MonoBehaviour
     [HideInInspector] public RulesType rulesType;
     [HideInInspector] public GameObject cube;
     [HideInInspector] public int depth = 1;
+    [HideInInspector] public int ruleBitCount = 32;
     [SerializeField] public uint ruleNumber = 4294967295;
     int width;
     int height;
@@ -92,25 +93,21 @@ public class Generator : MonoBehaviour
                         Instantiate(cube, new Vector3(x, -y, z), Quaternion.identity);
     }
 
-    public void GenerateRandomRules()
+    public void GenerateRandomRules(int bits)
     {
         var random = new Random();
-        uint firstBits = (uint) random.Next(1 << 30);
-        uint secondBits = (uint) random.Next(1 << 2);
-        ruleNumber = (firstBits << 2) | secondBits;
+        
+        string bitString = "";
+        for (int i = 0; i < bits; i++)
+            bitString += random.NextDouble() > 0.5 ? "1" : "0";
+        
+        ruleNumber = Convert.ToUInt32(bitString, 2);
     }
 
-    public void GenerateRandomEvenRules()
+    public void GenerateRandomEvenRules(int bits)
     {
-        var random = new Random();
-        uint firstBits = (uint) random.Next(1 << 30);
-        uint secondBits = (uint) random.Next(1 << 2);
-        ruleNumber = (firstBits << 2) | secondBits;
+        GenerateRandomRules(bits);
         
-        // Protection for the one in four billion chance the number is 1.
-        if (ruleNumber == 1)
-            ruleNumber = 2;
-
         if (ruleNumber % 2 == 1)
             ruleNumber--;
     }
