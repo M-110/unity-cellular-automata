@@ -35,10 +35,10 @@ public class Generator : MonoBehaviour
     bool ApplyRule(int x, int y, int z)
     {
         bool center = layers[y - 1][x, z];
-        bool left = layers[y - 1][x - 1, z];
-        bool right = layers[y - 1][x + 1, z];
-        bool up = layers[y - 1][x, z + 1];
-        bool down = layers[y - 1][x, z - 1];
+        bool left = layers[y - 1][(x - 1)%width, z];
+        bool right = layers[y - 1][(x + 1)%width, z];
+        bool up = layers[y - 1][x, (z + 1)%height];
+        bool down = layers[y - 1][x, (z - 1)%height];
         //Debug.Log($"xyz = ({x}, {y}, {z}), clrud = {center}, {left}, {right}, {up}, {down}");
         bool ex = rules.ApplyRules(center, left, right, up, down);
         
