@@ -8,6 +8,7 @@ namespace Rules
 
         protected RulesBase(uint ruleNumber) { }
 
-        public abstract bool ApplyRules(bool center, bool left, bool right, bool up, bool down);
+        public abstract bool ApplyRules(bool center, bool left, bool right, bool up, bool down,
+            bool upLeft, bool upRight, bool downLeft, bool downRight);
     }
 }

@@ -16,23 +16,15 @@ namespace Rules
                 rules[i] = binaryString[i] == '1';
         }
 
-        public override bool ApplyRules(bool center, bool left, bool right, bool up, bool down)
+        public override bool ApplyRules(bool center, bool left, bool right, bool up, bool down,
+            bool upLeft, bool upRight, bool downLeft, bool downRight)
         {
             int total = (center ? 1 : 0) +
                         (left ? 1 : 0) +
                         (right ? 1 : 0) +
                         (up ? 1 : 0) +
                         (down ? 1 : 0);
-
-            return total switch
-            {
-                0 => rules[5],
-                1 => rules[4],
-                2 => rules[3],
-                3 => rules[2],
-                4 => rules[1],
-                _ => rules[0]
-            };
+            return rules[total];
         }
     }
 }

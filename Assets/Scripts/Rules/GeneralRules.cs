@@ -13,7 +13,8 @@ namespace Rules
                 rules[i] = binaryString[i] == '1';
         }
     
-        public override bool ApplyRules(bool center, bool left, bool right, bool up, bool down)
+        public override bool ApplyRules(bool center, bool left, bool right, bool up, bool down,
+            bool upLeft, bool upRight, bool downLeft, bool downRight)
         {
             // This code is generated through Python, see below for script.
             if (center && left && right && up && down)
