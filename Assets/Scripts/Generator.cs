@@ -30,7 +30,11 @@ public class Generator : MonoBehaviour
         GenerateRules();
         GenerateTopLayer();
         GenerateLayers();
-        GenerateCubes();
+        
+        if (lastLayerOnly)
+            GenerateLastCubeLayerOnly();
+        else
+            GenerateCubes();
     }
     
 
@@ -94,6 +98,14 @@ public class Generator : MonoBehaviour
                 for (int z = 0; z < size; z++)
                     if (layers[y][x, z])
                         Instantiate(cube, new Vector3(x, -y, z), Quaternion.identity);
+    }
+
+    void GenerateLastCubeLayerOnly()
+    {
+        for (int x = 0; x < size; x++)
+            for (int z = 0; z < size; z++)
+                if (layers[depth-1][x, z])
+                    Instantiate(cube, new Vector3(x, 0, z), Quaternion.identity);
     }
 
     public void GenerateRandomRules(int bits)
