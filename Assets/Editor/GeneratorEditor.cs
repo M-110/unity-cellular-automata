@@ -1,6 +1,7 @@
 using System.Net;
 using Rules;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,21 +15,23 @@ namespace Editor
         {
             myGenerator = (Generator) target;
             
-            
             GeneralProperties();
-            DynamicProperties();
+            RulesTypeProperties();
             Buttons();
+            LayerOptions();
         }
 
         void GeneralProperties()
         {
-            myGenerator.depth =  EditorGUILayout.IntField("Depth", myGenerator.depth);
             myGenerator.cube = (GameObject)EditorGUILayout.ObjectField("Cube", myGenerator.cube, typeof(GameObject), true);
+            myGenerator.depth =  EditorGUILayout.IntField("Depth", myGenerator.depth);
+            myGenerator.size = EditorGUILayout.IntField("Size", myGenerator.size);
+            myGenerator.lastLayerOnly = EditorGUILayout.Toggle("Last Layer Only", myGenerator.lastLayerOnly);
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             myGenerator.rulesType = (RulesType)EditorGUILayout.EnumPopup("Rules Type", myGenerator.rulesType);
         }
 
-        void DynamicProperties()
+        void RulesTypeProperties()
         {
             if (myGenerator.rulesType == RulesType.General)
             {
@@ -61,16 +64,19 @@ namespace Editor
 
         void Buttons()
         {
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-            
             if (GUILayout.Button("Generate Random Rules"))
                 myGenerator.GenerateRandomRules(myGenerator.ruleBitCount);
             
             if (GUILayout.Button("Generate Random Rules (Even)"))
                 myGenerator.GenerateRandomEvenRules(myGenerator.ruleBitCount);
-            
-            if (GUILayout.Button("Generate Random Rules (1D)"))
-                myGenerator.GenerateRandom1DRules();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            //
+            // if (GUILayout.Button("Generate Random Rules (1D)"))
+            //     myGenerator.GenerateRandom1DRules();
+        }
+
+        void LayerOptions()
+        {
         }
     }
 }

@@ -18,10 +18,10 @@ public class Generator : MonoBehaviour
     [HideInInspector] public RulesType rulesType;
     [HideInInspector] public GameObject cube;
     [HideInInspector] public int depth = 1;
+    [HideInInspector] public bool lastLayerOnly;
     [HideInInspector] public int ruleBitCount = 32;
+    [HideInInspector] public int size;
     [SerializeField] public uint ruleNumber = 4294967295;
-    int width;
-    int height;
     List<bool[,]> layers = new List<bool[,]>();
     RulesBase rules;
     // 2186559728 Simple flat triangles
@@ -37,18 +37,22 @@ public class Generator : MonoBehaviour
     bool ApplyRule(int x, int y, int z)
     {
         bool[,] previousLayer = layers[y - 1];
-        bool center = previousLayer[x, z];
-        bool left = previousLayer[(x - 1)%width, z];
-        bool right = previousLayer[(x + 1)%width, z];
-        bool up = previousLayer[x, (z + 1)%height];
-        bool down = previousLayer[x, (z - 1)%height];
-        bool upLeft = previousLayer[(x - 1)%width, (z + 1)%height];
-        bool upRight = previousLayer[(x + 1)%width, (z + 1)%height];
-        bool downLeft = previousLayer[(x - 1)%width, (z - 1)%height];
-        bool downRight = previousLayer[(x + 1)%width, (z - 1)%height];
-        //Debug.Log($"xyz = ({x}, {y}, {z}), clrud = {center}, {left}, {right}, {up}, {down}");
-        return rules.ApplyRules(center, left, right, up, down, upLeft, upRight, downLeft, downRight);
         
+        int xLeft = x == 0 ? size - 1 : x - 1;
+        int xRight = (x + 1) % size;
+        int zUp = (z + 1) % size;
+        int zDown = z == 0 ? size - 1 : z - 1;
+        
+        bool center = previousLayer[x, z];
+        bool left = previousLayer[xLeft, z];
+        bool right = previousLayer[xRight, z];
+        bool up = previousLayer[x, zUp];
+        bool down = previousLayer[x, zDown];
+        bool upLeft = previousLayer[xLeft, zUp];
+        bool upRight = previousLayer[xRight, zUp];
+        bool downLeft = previousLayer[xLeft, zDown];
+        bool downRight = previousLayer[xRight, zDown];
+        return rules.ApplyRules(center, left, right, up, down, upLeft, upRight, downLeft, downRight);
     }
     void GenerateRules()
     {
@@ -64,10 +68,9 @@ public class Generator : MonoBehaviour
 
     void GenerateTopLayer()
     {
-        width = depth * 2 + 2;
-        height = depth * 2 + 2;
-        var layer = new bool[width, height];
-        layer[width / 2, height / 2] = true;
+        // size = depth * 2 + 2;
+        var layer = new bool[size, size];
+        layer[size / 2, size / 2] = true;
         layers.Add(layer);
     }
 
@@ -75,10 +78,10 @@ public class Generator : MonoBehaviour
     {
         for (int y = 1; y < depth; y++)
         {
-            bool[,] newLayer = new bool[width, height];
+            bool[,] newLayer = new bool[size, size];
             
-            for (int x = 2; x < width - 1; x++)
-                for (int z = 2; z < height - 1; z++)
+            for (int x = 0; x < size; x++)
+                for (int z = 0; z < size; z++)
                     newLayer[x, z] = ApplyRule(x, y, z);
             
             layers.Add(newLayer);
@@ -87,8 +90,8 @@ public class Generator : MonoBehaviour
     void GenerateCubes()
     {
         for (int y = 0; y < depth; y++)
-            for (int x = 2; x < width - 1; x++)
-                for (int z = 2; z < height - 1; z++)
+            for (int x = 0; x < size; x++)
+                for (int z = 0; z < size; z++)
                     if (layers[y][x, z])
                         Instantiate(cube, new Vector3(x, -y, z), Quaternion.identity);
     }
