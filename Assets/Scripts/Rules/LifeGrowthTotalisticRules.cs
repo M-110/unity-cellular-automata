@@ -11,7 +11,7 @@ namespace Rules
             if (binaryString.Length > 16)
                 Debug.Log("Number is extra long");
             rules = new bool[16];
-        
+            Debug.Log(binaryString);
             for (int i = 0; i < 16; i++)
                 rules[i] = binaryString[i] == '1';
         }
@@ -28,6 +28,7 @@ namespace Rules
                         (downLeft ? 1 : 0) +
                         (downRight ? 1 : 0);
             return rules[center ? total + 7 : total];
+            // Conway's Game of Life: 4192
         }
     }
 }

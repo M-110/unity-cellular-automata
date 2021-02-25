@@ -12,16 +12,24 @@ public enum RulesType
     Totalistic,
     GrowthTotalistic
 }
-
+ // TODO: Animator, Initial Conditions
 public class Generator : MonoBehaviour
 {
     [HideInInspector] public RulesType rulesType;
     [HideInInspector] public GameObject cube;
     [HideInInspector] public int depth = 1;
+    [HideInInspector] public bool useDefaultSize;
+    
     [HideInInspector] public bool lastLayerOnly;
+    
+    [HideInInspector] public bool useAnimation = true;
+    [HideInInspector] public float animationFPS = 1;
+    [HideInInspector] public float timeSinceLastUpdate;
+    
     [HideInInspector] public int ruleBitCount = 32;
     [HideInInspector] public int size;
     [SerializeField] public uint ruleNumber = 4294967295;
+    List<GameObject> currentCubes = new List<GameObject>();
     List<bool[,]> layers = new List<bool[,]>();
     RulesBase rules;
     // 2186559728 Simple flat triangles
@@ -29,12 +37,17 @@ public class Generator : MonoBehaviour
     {
         GenerateRules();
         GenerateTopLayer();
-        GenerateLayers();
-        
-        if (lastLayerOnly)
-            GenerateLastCubeLayerOnly();
-        else
-            GenerateCubes();
+        useAnimation = true;
+        animationFPS = 1;
+        if (!useAnimation)
+            GenerateAllLayers();
+    }
+
+    void Update()
+    {
+        if (!useAnimation)
+            return;
+        GenerateNextLayer();
     }
     
 
@@ -70,11 +83,52 @@ public class Generator : MonoBehaviour
         };
     }
 
+    void GenerateAllLayers()
+    {
+        GenerateLayers();
+        if (lastLayerOnly)
+            GenerateLastCubeLayerOnly();
+        else
+            GenerateCubes();
+    }
+
+    void GenerateNextLayer()
+    {
+        Debug.Log(timeSinceLastUpdate);
+        if (timeSinceLastUpdate < animationFPS)
+        {
+            timeSinceLastUpdate += Time.deltaTime;
+            return;
+        }
+    
+        timeSinceLastUpdate = 0;
+        
+        bool[,] newLayer = new bool[size, size];
+        
+        for (int x = 0; x < size; x++)
+            for (int z = 0; z < size; z++) 
+                newLayer[x, z] = ApplyRule(x, 1, z);
+        layers[0] = newLayer;
+
+        foreach (var oldCube in currentCubes)
+            Destroy(oldCube);
+        
+        for (int x = 0; x < size; x++)
+            for (int z = 0; z < size; z++)
+                if (newLayer[x, z])
+                {
+                    GameObject newCube = Instantiate(cube, new Vector3(x, 0, z), Quaternion.identity);
+                    currentCubes.Add(newCube);
+                }
+    }
+    
     void GenerateTopLayer()
     {
         // size = depth * 2 + 2;
         var layer = new bool[size, size];
         layer[size / 2, size / 2] = true;
+        layer[size / 2 + 4, size / 2] = true;
+        layer[size / 2 - 4, size / 2] = true;
         layers.Add(layer);
     }
 

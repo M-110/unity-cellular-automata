@@ -11,7 +11,6 @@ namespace Editor
     public class GeneratorEditor : UnityEditor.Editor
     {
         Generator myGenerator;
-        bool useDefaultSizing = true;
         public override void OnInspectorGUI()
         {
             myGenerator = (Generator) target;
@@ -27,8 +26,8 @@ namespace Editor
             myGenerator.cube = (GameObject)EditorGUILayout.ObjectField("Cube", myGenerator.cube, typeof(GameObject), true);
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             
-            useDefaultSizing = EditorGUILayout.ToggleLeft("Use Default Sizing (Depth / 2 - 1)", useDefaultSizing);
-            if (useDefaultSizing)
+            myGenerator.useDefaultSize = EditorGUILayout.ToggleLeft("Use Default Sizing (Depth / 2 - 1)", myGenerator.useDefaultSize);
+            if (myGenerator.useDefaultSize)
             {
                 myGenerator.size = myGenerator.depth * 2 - 1;
                 GUI.enabled = false;
