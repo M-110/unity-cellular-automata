@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rules;
+using HelperPatterns;
 using UnityEngine;
 using Random = System.Random;
 
@@ -94,7 +95,6 @@ public class Generator : MonoBehaviour
 
     void GenerateNextLayer()
     {
-        Debug.Log(timeSinceLastUpdate);
         if (timeSinceLastUpdate < animationFPS)
         {
             timeSinceLastUpdate += Time.deltaTime;
@@ -111,13 +111,14 @@ public class Generator : MonoBehaviour
         layers[0] = newLayer;
 
         foreach (var oldCube in currentCubes)
-            Destroy(oldCube);
+            ObjectPool.Instance.PoolCube(oldCube);
         
         for (int x = 0; x < size; x++)
             for (int z = 0; z < size; z++)
                 if (newLayer[x, z])
                 {
-                    GameObject newCube = Instantiate(cube, new Vector3(x, 0, z), Quaternion.identity);
+                    GameObject newCube = ObjectPool.Instance.PullCube();
+                    newCube.transform.position = new Vector3(x, 0, z);
                     currentCubes.Add(newCube);
                 }
     }
