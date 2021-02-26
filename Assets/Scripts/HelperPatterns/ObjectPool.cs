@@ -13,7 +13,7 @@ namespace HelperPatterns
 
         void Start()
         {
-            containerObject = new GameObject("ObjectPool");
+            containerObject = new GameObject("PooledObjects");
             pooledCubes = new List<GameObject>();
 
             for (int i = 0; i < amountToBuffer; i++)

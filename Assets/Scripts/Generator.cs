@@ -13,7 +13,7 @@ public enum RulesType
     Totalistic,
     GrowthTotalistic
 }
- // TODO: Animator, Initial Conditions
+ // TODO: Fix Animator, Initial Conditions
 public class Generator : MonoBehaviour
 {
     [HideInInspector] public RulesType rulesType;
@@ -24,7 +24,7 @@ public class Generator : MonoBehaviour
     [HideInInspector] public bool lastLayerOnly;
     
     [HideInInspector] public bool useAnimation = true;
-    [HideInInspector] public float animationFPS = 1;
+    [HideInInspector] public int animationFPS = 1;
     [HideInInspector] public float timeSinceLastUpdate;
     
     [HideInInspector] public int ruleBitCount = 32;
@@ -38,8 +38,6 @@ public class Generator : MonoBehaviour
     {
         GenerateRules();
         GenerateTopLayer();
-        useAnimation = true;
-        animationFPS = 1;
         if (!useAnimation)
             GenerateAllLayers();
     }
@@ -95,7 +93,7 @@ public class Generator : MonoBehaviour
 
     void GenerateNextLayer()
     {
-        if (timeSinceLastUpdate < animationFPS)
+        if (timeSinceLastUpdate < 1f / animationFPS)
         {
             timeSinceLastUpdate += Time.deltaTime;
             return;
@@ -108,10 +106,15 @@ public class Generator : MonoBehaviour
         for (int x = 0; x < size; x++)
             for (int z = 0; z < size; z++) 
                 newLayer[x, z] = ApplyRule(x, 1, z);
-        layers[0] = newLayer;
+        layers.Clear();
+        layers.Add(newLayer);
 
         foreach (var oldCube in currentCubes)
+        {
             ObjectPool.Instance.PoolCube(oldCube);
+        }
+        currentCubes.Clear();
+        
         
         for (int x = 0; x < size; x++)
             for (int z = 0; z < size; z++)
@@ -128,8 +131,8 @@ public class Generator : MonoBehaviour
         // size = depth * 2 + 2;
         var layer = new bool[size, size];
         layer[size / 2, size / 2] = true;
-        layer[size / 2 + 4, size / 2] = true;
-        layer[size / 2 - 4, size / 2] = true;
+        //layer[size / 2 + 4, size / 2] = true;
+        //layer[size / 2 - 4, size / 2] = true;
         layers.Add(layer);
     }
 

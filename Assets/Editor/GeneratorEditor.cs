@@ -17,6 +17,7 @@ namespace Editor
             
             GeneralProperties();
             RulesTypeProperties();
+            AnimationProperties();
             Buttons();
             LayerOptions();
         }
@@ -75,6 +76,14 @@ namespace Editor
                 int tempInt = EditorGUILayout.IntField("Rule Number", (int) myGenerator.ruleNumber);
                 myGenerator.ruleNumber = (uint) (tempInt < 0 ? 0 : tempInt > 31 ? 31 : tempInt);
             }
+        }
+
+        void AnimationProperties()
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            myGenerator.useAnimation = EditorGUILayout.Toggle("Use Animation", myGenerator.useAnimation);
+            myGenerator.animationFPS = EditorGUILayout.IntSlider("FPS", myGenerator.animationFPS, 1, 60);
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
 
         void Buttons()
