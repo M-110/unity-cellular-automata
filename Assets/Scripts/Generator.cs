@@ -13,7 +13,7 @@ public enum RulesType
     Totalistic,
     GrowthTotalistic
 }
- // TODO: Fix Animator, Initial Conditions
+ // TODO: Fix Positions, Initial Conditions
 public class Generator : MonoBehaviour
 {
     [HideInInspector] public RulesType rulesType;
