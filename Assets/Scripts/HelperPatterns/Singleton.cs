@@ -36,6 +36,7 @@ namespace HelperPatterns
             }
             else
             {
+                Debug.Log("Destroying extra manager");
                 Destroy(gameObject);
             }
         }
