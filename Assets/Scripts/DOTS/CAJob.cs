@@ -10,6 +10,7 @@ namespace DOTS
         public NativeArray<bool> rows;
         public int rowWidth;
         
+        
         public void Execute(int i)
         {
             bool a, b, c;
@@ -37,9 +38,26 @@ namespace DOTS
             rows[i] = ApplyRule(a, b, c);
         }
 
-        public bool ApplyRule(bool a, bool b, bool c)
+        bool ApplyRule(bool a, bool b, bool c)
         {
-            return a | b | c;
+            bool[] rule = {false, true, false, true, true, false, true, false};
+            if (a & b & c)
+                return rule[0];
+            if (a & !b & c)
+                return rule[1];
+            if (a & !b & !c)
+                return rule[2];
+            if (!a & b & c)
+                return rule[3];
+            if (a & b & !c)
+                return rule[4];
+            if (!a & b & !c)
+                return rule[5];
+            if (!a & !b & c)
+                return rule[6];
+            if (!a & !b & !c)
+                return rule[7];
+            return false;
         }
     }
 }

@@ -6,14 +6,12 @@ using Unity.Mathematics;
 
 namespace DOTS
 {
-    public class ECSManager : Singleton<ECSManager>
+    public class ECSManager : MonoBehaviour
     {
         public EntityManager manager;
         public GameObject squarePrefab;
         public Entity square;
         public int depth;
-        public bool[] rows;
-        public int rowWidth;
 
         public void Start()
         {

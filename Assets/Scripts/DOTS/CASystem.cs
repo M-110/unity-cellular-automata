@@ -10,7 +10,10 @@ namespace DOTS
     public class CASystem : JobComponentSystem
     {
         EntityManager manager;
+        ECSManager ecsManager;
+        Entity entity;
         bool[] rows;
+        int depth;
         int rowWidth;
         bool updated;
         NativeArray<bool> rowsArray;
@@ -24,15 +27,22 @@ namespace DOTS
 
         void Setup()
         {
-            int depth = ECSManager.Instance.depth;
-            
-
+            ecsManager = Object.FindObjectOfType<ECSManager>();
+            depth = ecsManager.depth;
             rowWidth = 2 * depth - 1;
             rows = new bool[rowWidth * depth];
             int center = rowWidth / 2;
 
             rows[center] = true;
+            
+            manager = World.DefaultGameObjectInjectionWorld.EntityManager;
+            var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+            var cube = ecsManager.squarePrefab;
+            entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(cube, settings);
+            
         }
+        
+        
 
         void UpdateArray()
         {
@@ -45,21 +55,12 @@ namespace DOTS
                 rowWidth = rowWidth
             };
 
-            var jobHandle = myJob.Schedule(rows.Length, rowWidth * 5);
+            var jobHandle = myJob.Schedule(rows.Length, rows.Length);
             jobHandle.Complete();
             Debug.Log("Completed JOB");
             
             rowsArray.CopyTo(rows);
             rowsArray.Dispose();
-            for (int i = 0; i < rows.Length / rowWidth; i++)
-            {
-                string output = "";
-                for (int j = 0; j < rowWidth; j++)
-                {
-                    output += rows[i * rowWidth + j] ? "1" : "0";
-                }
-                Debug.Log($"Row {i}: {output}");
-            }
 
             updated = true;
         }
@@ -68,17 +69,12 @@ namespace DOTS
         {
             if (!updated) return inputDeps;
             
-            manager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-            var cube = (GameObject) Resources.Load("Cube");
-            var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(cube, settings);
-            
             Debug.Log("Instantiating entities");
             for (int i = 0; i < rows.Length; i++)
             {
                 if (!rows[i]) continue;
 
-                var position = new Vector3(i % rowWidth, i / rowWidth, 0);
+                var position = new Vector3(i % rowWidth - depth, -(i / rowWidth), 0);
                 var instance = manager.Instantiate(entity);
                 manager.SetComponentData(instance, new Translation { Value = position });
             }
