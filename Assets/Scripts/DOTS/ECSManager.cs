@@ -11,6 +11,7 @@ namespace DOTS
         public EntityManager manager;
         public GameObject squarePrefab;
         public Entity square;
+        public int rule = 90;
         public int depth;
 
         public void Start()

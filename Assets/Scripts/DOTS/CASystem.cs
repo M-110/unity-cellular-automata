@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DOTS
 {
@@ -13,6 +15,7 @@ namespace DOTS
         ECSManager ecsManager;
         Entity entity;
         bool[] rows;
+        bool[] rules = new bool[8];
         int depth;
         int rowWidth;
         bool updated;
@@ -40,6 +43,9 @@ namespace DOTS
             var cube = ecsManager.squarePrefab;
             entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(cube, settings);
             
+            string binaryString = Convert.ToString(ecsManager.rule, 2).PadLeft(8, '0');
+            for (int i = 0; i < binaryString.Length; i++)
+                rules[i] = binaryString[i] == '1';
         }
         
         
@@ -49,10 +55,12 @@ namespace DOTS
             Debug.Log("Creating CA System");
             Debug.Log(rows.Length);
             rowsArray = new NativeArray<bool>(rows, Allocator.TempJob);
+            var rulesArray = new NativeArray<bool>(rules, Allocator.TempJob);
             var myJob = new CAJob
             {
                 rows = rowsArray,
-                rowWidth = rowWidth
+                rowWidth = rowWidth,
+                rules = rulesArray
             };
 
             var jobHandle = myJob.Schedule(rows.Length, rows.Length);
@@ -60,6 +68,7 @@ namespace DOTS
             Debug.Log("Completed JOB");
             
             rowsArray.CopyTo(rows);
+            rulesArray.Dispose();
             rowsArray.Dispose();
 
             updated = true;
