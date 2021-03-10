@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace DOTS
 {
-    public class CASystem : JobComponentSystem
+    public class CASystemRowByRow : JobComponentSystem
     {
         EntityManager manager;
         ECSManager ecsManager;
@@ -56,15 +56,20 @@ namespace DOTS
             Debug.Log(rows.Length);
             rowsArray = new NativeArray<bool>(rows, Allocator.TempJob);
             var rulesArray = new NativeArray<bool>(rules, Allocator.TempJob);
-            var myJob = new CAJob
+            
+            for (int i = 1; i < depth; i++)
             {
-                rows = rowsArray,
-                rowWidth = rowWidth,
-                rules = rulesArray
-            };
-
-            var jobHandle = myJob.Schedule(rows.Length, rows.Length);
-            jobHandle.Complete();
+                var myJob = new UpdateRowJob
+                {
+                    rows = rowsArray,
+                    rowNumber = i,
+                    rowWidth = rowWidth,
+                    rules = rulesArray
+                };
+                var jobHandle = myJob.Schedule(rowWidth, rowWidth);
+                jobHandle.Complete();
+            }
+            
             Debug.Log("Completed JOB");
             
             rowsArray.CopyTo(rows);
@@ -73,7 +78,7 @@ namespace DOTS
 
             updated = true;
         }
-
+        
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
             if (!updated) return inputDeps;

@@ -5,15 +5,17 @@ using UnityEngine;
 
 namespace DOTS
 {
-    public struct CAJob : IJobParallelFor
+    public struct UpdateRowJob : IJobParallelFor
     {
         public NativeArray<bool> rows;
+        public int rowNumber;
         public int rowWidth;
         public NativeArray<bool> rules;
         
         
         public void Execute(int i)
         {
+            i +=  rowNumber * rowWidth;
             bool a, b, c;
             if (i < rowWidth) return;
 
