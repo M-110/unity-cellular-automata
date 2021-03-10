@@ -7,38 +7,37 @@ namespace DOTS
 {
     public struct UpdateRowJob : IJobParallelFor
     {
-        public NativeArray<bool> rows;
-        public int rowNumber;
+        public NativeArray<bool> previousRow;
+        public NativeArray<bool> newRow;
         public int rowWidth;
         public NativeArray<bool> rules;
         
         
         public void Execute(int i)
         {
-            i +=  rowNumber * rowWidth;
+            if (i >= rowWidth) return;
             bool a, b, c;
-            if (i < rowWidth) return;
 
-            if (i % rowWidth == 0) // Left edge
+            if (i == 0) // Left edge
             {
-                a = rows[i - 1];
-                b = rows[i - rowWidth];
-                c = rows[i - rowWidth + 1];
+                a = previousRow[rowWidth - 1];
+                b = previousRow[i];
+                c = previousRow[1];
             }
-            else if (i % rowWidth == rowWidth - 1) // Right edge
+            else if (i == rowWidth - 1) // Right edge
             {
-                a = rows[i - rowWidth - 1];
-                b = rows[i - rowWidth];
-                c = rows[i + 1 - 2 * rowWidth];
+                a = previousRow[i - 1];
+                b = previousRow[i];
+                c = previousRow[0];
             }
             else
             {
-                a = rows[i - rowWidth - 1];
-                b = rows[i - rowWidth];
-                c = rows[i - rowWidth + 1];
+                a = previousRow[i - 1];
+                b = previousRow[i];
+                c = previousRow[i + 1];
             }
 
-            rows[i] = ApplyRule(a, b, c);
+            newRow[i] = ApplyRule(a, b, c);
         }
 
         bool ApplyRule(bool a, bool b, bool c)
