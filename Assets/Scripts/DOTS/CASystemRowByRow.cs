@@ -60,7 +60,7 @@ namespace DOTS
         void UpdateArray()
         {
             Debug.Log("Creating CA System");
-            Debug.Log(rows.Length);
+            Debug.Log(rows.Length * rowWidth);
             
             rulesArray = new NativeArray<bool>(rules, Allocator.TempJob);
             
@@ -97,14 +97,14 @@ namespace DOTS
             
             Debug.Log("Instantiating entities");
             for (int i = 0; i < depth; i++)
-                for (int j = 0; j < rowWidth; j++)
-                {
-                    if (!rows[i][j]) continue;
+            for (int j = 0; j < rowWidth; j++)
+            {
+                if (!rows[i][j]) continue;
 
-                    var position = new Vector3(j, -i, 0);
-                    var instance = manager.Instantiate(entity);
-                    manager.SetComponentData(instance, new Translation { Value = position });
-                }
+                var position = new Vector3(j, -i, 0);
+                var instance = manager.Instantiate(entity);
+                manager.SetComponentData(instance, new Translation { Value = position });
+            }
             
             Debug.Log("Finished instantiating");
 

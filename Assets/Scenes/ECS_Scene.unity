@@ -152,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce3a873ed28b42159faa2705677c4424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squarePrefab: {fileID: 6337986922069554310, guid: e6c6a9851145c124cb4646532da0b290, type: 3}
-  rule: 255
-  depth: 500
+  squarePrefab: {fileID: 2897430427255950793, guid: f82ce4f9609cce24d8e653280cced1fa, type: 3}
+  rule: 110
+  depth: 2000
 --- !u!4 &880950947
 Transform:
   m_ObjectHideFlags: 0
