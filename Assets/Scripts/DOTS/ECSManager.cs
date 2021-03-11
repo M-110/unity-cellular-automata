@@ -16,9 +16,7 @@ namespace DOTS
 
         public void Start()
         {
-            manager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-            square = GameObjectConversionUtility.ConvertGameObjectHierarchy(squarePrefab, settings);
+            CASystemRowByRow.SetNewGridSettings(squarePrefab, rule, depth);
         }
         
     }

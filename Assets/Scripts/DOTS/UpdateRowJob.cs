@@ -1,10 +1,12 @@
-﻿using Unity.Collections;
+﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace DOTS
 {
+    [BurstCompile]
     public struct UpdateRowJob : IJobParallelFor
     {
         public NativeArray<bool> previousRow;

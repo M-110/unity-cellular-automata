@@ -11,14 +11,21 @@ namespace DOTS
 {
     public class CASystemRowByRow : JobComponentSystem
     {
-        EntityManager manager;
-        ECSManager ecsManager;
-        Entity entity;
+        // Static variables
+        static bool isNewGrid;
+        static Entity entity;
+        static bool[] rules;
+        static int depth;
+        static EntityManager manager;
+
+        //EntityManager manager;
+        //ECSManager ecsManager;
+        //Entity entity;
         bool[][] rows;
-        bool[] rules = new bool[8];
-        int depth;
+        //bool[] = new bool[8];
+        //int depth;
         int rowWidth;
-        bool updated;
+        //bool updated;
         
         [NativeDisableParallelForRestriction]
         NativeArray<bool> rulesArray;
@@ -27,41 +34,116 @@ namespace DOTS
         NativeArray<bool> previousRowArray;
         NativeArray<bool> newRowArray;
 
-        protected override void OnCreate()
+        // protected override void OnCreate()
+        // {
+        //     base.OnCreate();
+        //     Setup();
+        //     UpdateArray();
+        // }
+
+        public static void SetNewGridSettings(GameObject prefab, int ruleNumber, int depth_)
         {
-            base.OnCreate();
-            Setup();
-            UpdateArray();
+            entity = PrefabToEntity(prefab);
+            rules = IntToRules(ruleNumber);
+            depth = depth_;
+            isNewGrid = true;
         }
 
-        void Setup()
+        static Entity PrefabToEntity(GameObject prefab)
         {
-            ecsManager = Object.FindObjectOfType<ECSManager>();
-            depth = ecsManager.depth;
-            rowWidth = 2 * depth - 1;
-            rows = new bool[depth][];
-            int center = rowWidth / 2;
-
-            rows[0] = new bool[rowWidth];
-            rows[0][center] = true;
-            
             manager = World.DefaultGameObjectInjectionWorld.EntityManager;
             var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-            var cube = ecsManager.squarePrefab;
-            entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(cube, settings);
-            
-            string binaryString = Convert.ToString(ecsManager.rule, 2).PadLeft(8, '0');
-            for (int i = 0; i < binaryString.Length; i++)
-                rules[i] = binaryString[i] == '1';
+            return GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
         }
+
+        static bool[] IntToRules(int ruleNumber)
+        {
+            bool[] newRules = new bool[8];
+            
+            string binaryString = Convert.ToString(ruleNumber, 2).PadLeft(8, '0');
+            for (int i = 0; i < binaryString.Length; i++)
+                newRules[i] = binaryString[i] == '1';
+
+            return newRules;
+        }
+
+        // void Setup()
+        // {
+        //     ecsManager = Object.FindObjectOfType<ECSManager>();
+        //     depth = ecsManager.depth;
+        //     rowWidth = 2 * depth - 1;
+        //     rows = new bool[depth][];
+        //     int center = rowWidth / 2;
+        //
+        //     rows[0] = new bool[rowWidth];
+        //     rows[0][center] = true;
+        // }
         
         
 
-        void UpdateArray()
+        // void UpdateArray()
+        // {
+        //     Debug.Log("Creating CA System");
+        //     Debug.Log(rows.Length * rowWidth);
+        //     
+        //     rulesArray = new NativeArray<bool>(rules, Allocator.TempJob);
+        //     
+        //     for (int i = 1; i < depth; i++)
+        //     {
+        //         previousRowArray= new NativeArray<bool>(rows[i - 1], Allocator.TempJob);
+        //         newRowArray = new NativeArray<bool>(new bool[rowWidth], Allocator.TempJob);
+        //         
+        //         var myJob = new UpdateRowJob
+        //         {
+        //             previousRow = previousRowArray,
+        //             newRow = newRowArray,
+        //             rowWidth = rowWidth,
+        //             rules = rulesArray
+        //         };
+        //         
+        //         var jobHandle = myJob.Schedule(rowWidth, rowWidth);
+        //         jobHandle.Complete();
+        //
+        //         previousRowArray.Dispose();
+        //         rows[i] = newRowArray.ToArray();
+        //         newRowArray.Dispose();
+        //     }
+        //     
+        //     Debug.Log("Completed JOB");
+        //     rulesArray.Dispose();
+        //
+        //     updated = true;
+        // }
+        
+        protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            Debug.Log("Creating CA System");
-            Debug.Log(rows.Length * rowWidth);
+            if (!isNewGrid) return inputDeps;
+
+            CreateNewGrid();
             
+            return inputDeps;
+        }
+
+        void CreateNewGrid()
+        {
+            //DestroyPreviousValues()? Pool entities?
+            SetGridProperties();
+            SetGridValues();
+            InstantiateEntities();
+            isNewGrid = false;
+        }
+
+        void SetGridProperties()
+        {
+            rowWidth = 2 * depth - 1;
+            rows = new bool[depth][];
+            
+            rows[0] = new bool[rowWidth];
+            rows[0][rowWidth / 2] = true;
+        }
+
+        void SetGridValues()
+        {
             rulesArray = new NativeArray<bool>(rules, Allocator.TempJob);
             
             for (int i = 1; i < depth; i++)
@@ -84,32 +166,21 @@ namespace DOTS
                 rows[i] = newRowArray.ToArray();
                 newRowArray.Dispose();
             }
-            
-            Debug.Log("Completed JOB");
+
             rulesArray.Dispose();
-
-            updated = true;
         }
-        
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
+
+        void InstantiateEntities()
         {
-            if (!updated) return inputDeps;
-            
-            Debug.Log("Instantiating entities");
             for (int i = 0; i < depth; i++)
-            for (int j = 0; j < rowWidth; j++)
-            {
-                if (!rows[i][j]) continue;
-
-                var position = new Vector3(j, -i, 0);
-                var instance = manager.Instantiate(entity);
-                manager.SetComponentData(instance, new Translation { Value = position });
-            }
-            
-            Debug.Log("Finished instantiating");
-
-            updated = false;
-            return inputDeps;
+                for (int j = 0; j < rowWidth; j++)
+                {
+                    if (!rows[i][j]) continue;
+                    
+                    manager.SetComponentData(
+                        manager.Instantiate(entity),
+                        new Translation {Value = new Vector3(j, -i, 0)});
+                }
         }
     }
 }
