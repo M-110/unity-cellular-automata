@@ -35,7 +35,7 @@ namespace DOTS
         NativeArray<bool> newRowArray;
 
         // protected override void OnCreate()
-        // {
+        // { 
         //     base.OnCreate();
         //     Setup();
         //     UpdateArray();
